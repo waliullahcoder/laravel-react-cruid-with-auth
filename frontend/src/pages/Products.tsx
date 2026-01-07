@@ -1,51 +1,64 @@
-import { useState } from "react";
-import { register } from "../services/authService";
-import { useNavigate, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import api from "../api/axios";
+import "../styles/Login.css";
+
+interface Product {
+  id: number;
+  product_name: string;
+  price: string;
+  quantity: number;
+  created_at: string;
+  updated_at: string;
+}
 
 const Products = () => {
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
-  const navigate = useNavigate();
+  const [products, setProducts] = useState<Product[]>([]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await register(form);
-      alert("Registration successful. Login now!");
-      navigate("/login");
-    } catch (err) {
-      alert("Registration failed.");
-    }
-  };
+  // Load products from API
+  useEffect(() => {
+    api
+      .get("/products")
+      .then((res) => setProducts(res.data))
+      .catch((err) => console.error("Failed to fetch products:", err));
+  }, []);
 
   return (
-    <div>
-      <h2>Register</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          placeholder="Name"
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-        />
-        <br />
-        <input
-          type="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-        />
-        <br />
-        <input
-          type="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-        />
-        <br />
-        <button type="submit">Register</button>
-      </form>
-      <p>
-        Already have account? <Link to="/login">Login</Link>
-      </p>
+    <div className="bode">
+      <div className="table-card">
+        <h2>Products List</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Quantity</th>
+              <th>Created</th>
+              <th>Updated</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products.length > 0 ? (
+              products.map((product) => (
+                <tr key={product.id}>
+                  <td>{product.id}</td>
+                  <td>{product.product_name}</td>
+                  <td>{product.price}</td>
+                  <td>{product.quantity}</td>
+                  <td>{product.created_at}</td>
+                  <td>{product.updated_at}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={3} style={{ textAlign: "center" }}>
+                  No products found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

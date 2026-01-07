@@ -4,27 +4,42 @@ import { useNavigate, Link } from "react-router-dom";
 
 const Register = () => {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
+    const [modalMessage, setModalMessage] = useState("");
+  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await register(form);
-      alert("Registration successful. Login now!");
+      setModalMessage("Registration successful. Login now!");
+      setShowModal(true);
+      setTimeout(() => {
+        setShowModal(false);
+        navigate("/products");
+      }, 1500);
       navigate("/login");
     } catch (err) {
-      alert("Registration failed.");
+      setModalMessage("Registration failed. Please try again.");
+      setShowModal(true);
+      setTimeout(() => {
+        setShowModal(false);
+        navigate("/register");
+      }, 1500);
     }
   };
 
   return (
-    <div>
+   <div className="bode">
+     <div className="login-container">
+      <div className="login-card">
       <h2>Register</h2>
       <form onSubmit={handleSubmit}>
         <input
           placeholder="Name"
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
+          required
         />
         <br />
         <input
@@ -32,6 +47,7 @@ const Register = () => {
           placeholder="Email"
           value={form.email}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
+          required
         />
         <br />
         <input
@@ -39,6 +55,7 @@ const Register = () => {
           placeholder="Password"
           value={form.password}
           onChange={(e) => setForm({ ...form, password: e.target.value })}
+          required
         />
         <br />
         <button type="submit">Register</button>
@@ -46,6 +63,17 @@ const Register = () => {
       <p>
         Already have account? <Link to="/login">Login</Link>
       </p>
+      </div>
+       {/* Modal */}
+      {showModal && (
+        <div className="modal-backdrop">
+          <div className="modal-box">
+            <p>{modalMessage}</p>
+            <button onClick={() => setShowModal(false)}>Close</button>
+          </div>
+        </div>
+      )}
+      </div>
     </div>
   );
 };
