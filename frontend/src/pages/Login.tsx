@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { login } from "../services/authService";
 import { useNavigate, Link } from "react-router-dom";
-import "../styles/Login.css"; // ✅ Import external CSS
+import "../styles/Login.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -13,19 +13,26 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     try {
+      // 1️⃣ Get CSRF cookie and login
       const res = await login({ email, password });
 
+      // 2️⃣ Save user directly from login response
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+
+      // 3️⃣ Show success modal
       setModalMessage("Login successful!");
       setShowModal(true);
 
+      // 4️⃣ Navigate after short delay
       setTimeout(() => {
         setShowModal(false);
         navigate("/products");
-      }, 1500);
+      }, 1000);
     } catch (err: any) {
       setModalMessage(
-        err.response?.data?.message || "Login failed. Check credentials."
+        err.response?.data?.message || "Invalid email or password"
       );
       setShowModal(true);
     }
@@ -33,10 +40,9 @@ const Login = () => {
 
   return (
     <div className="bode">
-  {/* <div className="card"> */}
-    <div className="login-container">
       <div className="login-card">
         <h2>Login</h2>
+
         <form onSubmit={handleSubmit}>
           <input
             type="email"
@@ -45,6 +51,7 @@ const Login = () => {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
+
           <input
             type="password"
             placeholder="Password"
@@ -52,8 +59,10 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+
           <button type="submit">Login</button>
         </form>
+
         <p>
           Don't have an account? <Link to="/register">Register</Link>
         </p>
@@ -64,13 +73,11 @@ const Login = () => {
         <div className="modal-backdrop">
           <div className="modal-box">
             <p>{modalMessage}</p>
-            <button onClick={() => setShowModal(false)}>Close</button>
+            <button onClick={() => setShowModal(false)}>OK</button>
           </div>
         </div>
       )}
-      </div>
-      </div>
-    // </div>
+    </div>
   );
 };
 

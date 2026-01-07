@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Product;
 use Illuminate\Support\Facades\Hash;
@@ -80,9 +81,12 @@ class AuthController extends Controller
         }
 
         $token = $user->createToken('api_token')->plainTextToken;
-
-        return response()->json(['token'=>$token]);
+  
+        return response()->json(['message' => 'Login successful','token'=>$token,'user' => $user]);
     }
+
+
+
 
     public function logout(Request $request)
     {

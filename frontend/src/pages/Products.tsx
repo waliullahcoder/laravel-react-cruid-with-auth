@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import api from "../api/axios";
 import "../styles/Login.css";
-
+import { Link } from "react-router-dom";
 interface Product {
   id: number;
   product_name: string;
@@ -17,7 +17,7 @@ const Products = () => {
   // Load products from API
   useEffect(() => {
     api
-      .get("/products")
+      .get("/api/products")
       .then((res) => setProducts(res.data))
       .catch((err) => console.error("Failed to fetch products:", err));
   }, []);
@@ -25,6 +25,11 @@ const Products = () => {
   return (
     <div className="bode">
       <div className="table-card">
+        <ul>
+    <li><Link to="/login">Login</Link></li>
+    <li><Link to="/register">Registration</Link></li>
+    <li><Link to="/logout">Logout</Link></li>
+  </ul>
         <h2>Products List</h2>
         <table>
           <thead>

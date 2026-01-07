@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { register } from "../services/authService";
 import { useNavigate, Link } from "react-router-dom";
-
+import "../styles/Login.css";
 const Register = () => {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
     const [modalMessage, setModalMessage] = useState("");
