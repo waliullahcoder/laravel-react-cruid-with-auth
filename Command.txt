@@ -1,0 +1,16 @@
+
+Laravel
+==========
+Sanctum
+https://www.souysoeng.com/2025/05/laravel-12-api-authentication-with.html
+Go Laragon Terminal
+composer create-project laravel/laravel backend
+composer require laravel/sanctum
+php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+php artisan migrate
+
+React
+==========
+Go Laragon Terminal (vite is new recommanded and "npx create-react-app frontend" was old)
+npm create vite@latest frontend
+
