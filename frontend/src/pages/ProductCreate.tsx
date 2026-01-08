@@ -31,19 +31,20 @@ const ProductForm = () => {
   }, []);
 
   /* 🔹 Load Product for Edit */
-  useEffect(() => {
-    if (isEdit) {
-      api.get(`/api/products/${id}`).then((res) => {
-        const p = res.data.product;
-        setForm({
-          product_name: p.product_name,
-          cat_id: p.cat_id,
-          price: p.price,
-          quantity: p.quantity,
-        });
+useEffect(() => {
+  if (isEdit) {
+    api.get(`/api/product/show/${id}`).then((res) => {
+      const p = res.data.product ?? res.data; // 👈 safety
+     console.log("wali",p);
+      setForm({
+        product_name: p.product_name ?? "",
+        cat_id: String(p.cat_id),   // ✅ MUST
+        price: String(p.price),
+        quantity: String(p.quantity),
       });
-    }
-  }, [id]);
+    });
+  }
+}, [id, isEdit]);
 
   /* 🔹 Submit */
   const handleSubmit = async (e: React.FormEvent) => {
@@ -51,19 +52,24 @@ const ProductForm = () => {
 
     try {
       if (isEdit) {
-        await api.put(`/api/product/update/${id}`, form);
+        await api.post(`/api/product/update/${id}`, form);
          setModalMessage("Product Updated successfully!");
       setShowModal(true);
+       setTimeout(() => {
+        setShowModal(false);
+        navigate("/products");
+      }, 1500);
       } else {
         await api.post("/api/product/store", form);
          setModalMessage("Product Added successfully!");
       setShowModal(true);
-      }
-     
-      setTimeout(() => {
+       setTimeout(() => {
         setShowModal(false);
         navigate("/products");
       }, 1500);
+      }
+     
+     
       navigate("/products");
     } catch {
       alert("Something went wrong!");
@@ -86,19 +92,20 @@ const ProductForm = () => {
         />
 
         <select
-          value={form.cat_id}
-          onChange={(e) =>
+        value={form.cat_id}
+        onChange={(e) =>
             setForm({ ...form, cat_id: e.target.value })
-          }
-          required
+        }
+        required
         >
-          <option value="">Select Category</option>
-          {categories.map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.cat_name}
+        <option value="">Select Category</option>
+        {categories.map((c) => (
+            <option key={c.id} value={String(c.id)}>
+            {c.cat_name}
             </option>
-          ))}
+        ))}
         </select>
+
 
         <input
           type="number"
