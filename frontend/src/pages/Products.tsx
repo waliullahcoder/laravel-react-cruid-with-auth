@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import api from "../api/axios";
 import "../styles/Login.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import dayjs from "../utils/dayjs";
 
 interface Product {
@@ -16,10 +16,26 @@ interface Product {
 
 const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
-  const [viewProduct, setViewProduct] = useState<any>(null);
-  const navigate = useNavigate();
+  const [viewProduct, setViewProduct] = useState<Product | null>(null);
+  const [flashMessage, setFlashMessage] = useState<string | null>(null);
 
-  // Load products
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  /* 🔹 Flash message from navigation */
+  useEffect(() => {
+    if (location.state?.message) {
+      setFlashMessage(location.state.message);
+
+      // prevent repeat message after reload
+      window.history.replaceState({}, document.title);
+
+      const timer = setTimeout(() => setFlashMessage(null), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [location.state]);
+
+  /* 🔹 Load products */
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -30,18 +46,22 @@ const Products = () => {
       .then((res) => setProducts(res.data.products))
       .catch((err) => console.error("Failed to fetch products:", err));
   };
-const handleDelete = async (id: number) => {
-  if (!window.confirm("Are you sure you want to delete this product?")) return;
 
-  try {
-    await api.get(`/api/product/delete/${id}`);
-    setProducts(products.filter((p) => p.id !== id));
-  } catch {
-    alert("Delete failed");
-  }
-};
+  /* 🔹 Delete product */
+  const handleDelete = async (id: number) => {
+    if (!window.confirm("Are you sure you want to delete this product?")) return;
 
-  
+    try {
+      await api.get(`/api/product/delete/${id}`);
+      setProducts(products.filter((p) => p.id !== id));
+
+      setFlashMessage("Product deleted successfully!");
+      setTimeout(() => setFlashMessage(null), 2000);
+
+    } catch {
+      alert("Delete failed");
+    }
+  };
 
   return (
     <div className="bode">
@@ -52,6 +72,11 @@ const handleDelete = async (id: number) => {
           <li><Link to="/product/create">Create Product</Link></li>
           <li><Link to="/logout">Logout</Link></li>
         </ul>
+
+        {/* Flash Message */}
+        {flashMessage && (
+          <div className="flash-message">{flashMessage}</div>
+        )}
 
         <h2>Products List</h2>
 
@@ -83,14 +108,11 @@ const handleDelete = async (id: number) => {
                   <td>
                     <button onClick={() => setViewProduct(product)}>View</button>
                     <button
-                      onClick={() =>
-                        navigate(`/product/edit/${product.id}`)
-                      }
+                      onClick={() => navigate(`/product/edit/${product.id}`)}
                       style={{ marginLeft: "5px" }}
                     >
                       Edit
                     </button>
-
                     <button
                       onClick={() => handleDelete(product.id)}
                       style={{ marginLeft: "5px", color: "red" }}
@@ -111,23 +133,20 @@ const handleDelete = async (id: number) => {
         </table>
       </div>
 
-
-      {/* View */}
+      {/* View Product Modal */}
       {viewProduct && (
-  <div className="modal-backdrop">
-    <div className="modal-box">
-      <h3>Product Details</h3>
-      <p><b>Name:</b> {viewProduct.product_name}</p>
-      <p><b>Category:</b> {viewProduct.category_name}</p>
-      <p><b>Price:</b> {viewProduct.price}</p>
-      <p><b>Quantity:</b> {viewProduct.quantity}</p>
-      <p><b>Created:</b> {dayjs(viewProduct.created_at).fromNow()}</p>
-
-      <button onClick={() => setViewProduct(null)}>Close</button>
-    </div>
-  </div>
-)}
-
+        <div className="modal-backdrop">
+          <div className="modal-box">
+            <h3>Product Details</h3>
+            <p><b>Name:</b> {viewProduct.product_name}</p>
+            <p><b>Category:</b> {viewProduct.category_name}</p>
+            <p><b>Price:</b> {viewProduct.price}</p>
+            <p><b>Quantity:</b> {viewProduct.quantity}</p>
+            <p><b>Created:</b> {dayjs(viewProduct.created_at).fromNow()}</p>
+            <button onClick={() => setViewProduct(null)}>Close</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

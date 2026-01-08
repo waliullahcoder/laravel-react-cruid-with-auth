@@ -54,7 +54,7 @@ html, body {
   flex-direction: column;
 }
 
-.login-card input {
+.login-card input,select {
   padding: 0.8rem;
   margin-bottom: 1rem;
   border-radius: 5px;
@@ -90,21 +90,25 @@ html, body {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.4);
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
-/* Modal box */
+/* large modal box */
 .modal-box {
-  background-color: #fff;
-  padding: 1.5rem 2rem;
+  background: #fff;
+  padding: 30px;
   border-radius: 10px;
-  text-align: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  width: 90%;       /* large width */
+  max-width: 800px; /* max width */
+  max-height: 90vh; /* prevent overflow */
+  overflow-y: auto; /* scroll if content too big */
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
 }
 
 /* Modal close button */
@@ -217,4 +221,14 @@ ul li a {
 
 ul li a:hover {
   background-color: #111111;
+}
+
+.flash-message {
+  background: #d1fae5;
+  color: #065f46;
+  padding: 10px 15px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  text-align: center;
+  font-weight: 500;
 }
