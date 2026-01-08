@@ -13,6 +13,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/product/create" element={<ProductCreate />} />
+        <Route path="/product/edit/:id" element={<ProductCreate />} />
         <Route path="/logout" element={<Logout />} />
 
         <Route
