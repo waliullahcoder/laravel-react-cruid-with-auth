@@ -98,9 +98,5 @@ class AuthController extends Controller
     {
         return response()->json($request->user());
     }
-    public function products(Request $request)
-    {
-       $products = Product::all();
-        return response()->json($products);
-    }
+   
 }

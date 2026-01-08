@@ -13,4 +13,5 @@ React
 ==========
 Go Laragon Terminal (vite is new recommanded and "npx create-react-app frontend" was old)
 npm create vite@latest frontend
-
+time 1 hour 1 second
+npm install dayjs

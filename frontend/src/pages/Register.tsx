@@ -3,12 +3,12 @@ import { register } from "../services/authService";
 import { useNavigate, Link } from "react-router-dom";
 import "../styles/Login.css";
 const Register = () => {
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
-    const [modalMessage, setModalMessage] = useState("");
-  const [showModal, setShowModal] = useState(false);
-  const navigate = useNavigate();
+const [form, setForm] = useState({ name: "", email: "", password: "" });
+const [modalMessage, setModalMessage] = useState("");
+const [showModal, setShowModal] = useState(false);
+const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await register(form);
